@@ -1,0 +1,33 @@
+sequenceDiagram
+    participant Browser
+    participant Server
+    participant User
+
+    User->>Browser: type a new note on input and click on save's button.
+    Browser->>Server: POST https://studies.cs.helsinki.fi/exampleapp/new_note  payload's value as note: 'new note'
+    activate Server
+    Note rigth if browser: Server save new note.
+    Server->>Browser: confirm the request
+    deactivate Server
+    Note right of browser: Browser upload the view and show the new note
+     Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate Server
+    Server-->>Browser: HTML document
+    deactivate Server
+
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate Server
+    Server-->>Browser: the css file
+    deactivate Server
+
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate Server
+    Server-->>Browser: the JavaScript file
+    deactivate Server
+
+    Note right of Browser: The Browser starts executing the JavaScript code that fetches the JSON from the Server
+
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate Server
+    Server-->>Browser: [{ "content": "new note", "date": "2024-10-31" }, ... ]
+    deactivate Server
