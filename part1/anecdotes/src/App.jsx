@@ -1,5 +1,11 @@
 import { useState } from 'react'
 
+const Buttons = ({text, handleClick}) => {
+  return (
+    <button onClick={handleClick}>{text}</button>
+  )
+}
+
 function App() {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -13,22 +19,48 @@ function App() {
   ]
 
   const [selected, setSelected] = useState(5)
-  console.log(anecdotes.length);
-  
+  const [votes, setVotes] = useState({
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0
+  })
+  console.log(selected);
+
   const handleQuote = () => {
     const random = Math.floor(Math.random() * anecdotes.length)
     setSelected(random)
     console.log(random);
   }
 
+  const handleVote = () => {
+    const turn = selected
+    setVotes(prevVotes => {
+      return { 
+        ...prevVotes,
+        [selected]: votes[turn] += 1 
+        }
+    })    
+  }
+  console.log('votes outside function',votes);
+
   return (
-    <div style={{display:'flex', flexDirection:'column'}}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       {anecdotes[selected]}
-      <button
-      onClick={handleQuote}
-      >
-        next anecdote
-      </button>
+      <section>
+        <Buttons
+          handleClick={handleQuote}
+          text={'next anecdote'}
+        />
+        <Buttons 
+        handleClick={handleVote}
+        text={'vote'}
+        />
+      </section>
     </div>
   )
 }
