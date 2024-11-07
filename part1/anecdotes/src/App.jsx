@@ -19,6 +19,7 @@ function App() {
   ]
 
   const [selected, setSelected] = useState(5)
+  const [popular, setPolular] = useState(null)
   const [votes, setVotes] = useState({
     0: 0,
     1: 0,
@@ -37,19 +38,29 @@ function App() {
     console.log(random);
   }
 
+  const sortVotes = () => {
+    const sorted = Object.entries(votes).sort((a, b) => b[1] - a[1] )
+    const [key, value] = sorted
+    console.log('sorted', key,value);
+    setPolular(sorted[0][0])
+  }
+  
   const handleVote = () => {
     const turn = selected
     setVotes(prevVotes => {
       return { 
         ...prevVotes,
         [selected]: votes[turn] += 1 
-        }
-    })    
+      }
+    }) 
+    sortVotes()   
+    console.log('sort function', popular);
   }
   console.log('votes outside function',votes);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <section>
         <Buttons
@@ -61,6 +72,13 @@ function App() {
         text={'vote'}
         />
       </section>
+      <h1>Anecdote with most votes</h1>
+    <p>
+      {popular === null 
+      ? '...'
+      : anecdotes[popular]
+      }
+    </p>
     </div>
   )
 }
