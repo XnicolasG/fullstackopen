@@ -14,15 +14,35 @@ const Button = ({ text, handleClick }) => {
   )
 }
 
-const Statitics = ({ text, state }) => {
+const StatisticLine = ({ text, value }) => {
+
   return (
-    <div style={{ display: 'flex', gap: '6px' }}>
-      <p>{text}</p>
-      
-        
-        <p>{state} {text === 'average' && '%'}</p>
-      
-    </div>
+    <tr>
+      <th>{text}</th>
+      <th>{value} {text === 'positive' && '%'}</th>
+    </tr>
+  )
+}
+
+const Statitics = (props) => {
+  const { good,
+    neutral,
+    bad,
+    total,
+    positive,
+    average } = props
+
+  return (
+    <table >
+      <tbody>
+        <StatisticLine text='good' value={good} />
+        <StatisticLine text='neutral' value={neutral} />
+        <StatisticLine text='bad' value={bad} />
+        <StatisticLine text='total' value={total} />
+        <StatisticLine text='average' value={average} />
+        <StatisticLine text='positive' value={positive} />
+      </tbody>
+    </table>
   )
 }
 
@@ -33,36 +53,53 @@ function App() {
   const [total, setTotal] = useState(0)
   const [score, setScore] = useState([])
   const [average, setAverage] = useState(0)
+  const [positive, setPositive] = useState(0)
 
   const handleGood = () => {
     setScore(prevScore => {
-      const newScore = prevScore.concat(1)
-      setAverage(newScore.reduce((a, b) => a + b, 0) / newScore.length)
+      const newScore = prevScore.concat(1);
+      setAverage((newScore.reduce((a, b) => a + b, 0) / newScore.length).toFixed(2))
       return newScore
     })
-    setTotal(good + neutral + bad + 1)
-    setGood(good + 1)
-  }
+    setTotal(prevTotal => {
+      const newTotal = prevTotal + 1
+      setGood(prevGood => {
+        const newGood = prevGood + 1
+        setPositive(((newGood / newTotal) * 100).toFixed(1))
+        return newGood
+      })
+      return newTotal;
+    });
+  };
+
   const handleNeutral = () => {
     setScore(prevScore => {
       const newScore = prevScore.concat(0)
-      setAverage(newScore.reduce((a, b) => a + b, 0) / newScore.length)
+      setAverage((newScore.reduce((a, b) => a + b, 0) / newScore.length).toFixed(2))
       return newScore
     });
-    setTotal(good + bad + neutral + 1)
-    setNeutral(neutral + 1)
+    setTotal(prevTotal => {
+      const newTotal = prevTotal + 1
+      setPositive(((good / newTotal) * 100).toFixed(1))
+      return newTotal;
+    })
+    setNeutral(prevNeutral => prevNeutral + 1)
   }
 
   const handleBad = () => {
     setScore(prevScore => {
       const newScore = prevScore.concat(-1)
-      setAverage(newScore.reduce((a, b) => a + b, 0) / newScore.length)
+      setAverage((newScore.reduce((a, b) => a + b, 0) / newScore.length).toFixed(2))
       return newScore
     })
-    setTotal(good + neutral + bad + 1)
-    setBad(bad + 1)
+    setTotal(prevTotal => {
+      const newTotal = prevTotal + 1
+      setPositive(((good / newTotal) * 100).toFixed(1))
+      return newTotal
+    })
+    setBad(prevBad => prevBad + 1)
   }
-  console.log(average);
+  console.log(positive);
 
 
   return (
@@ -77,11 +114,14 @@ function App() {
         total !== 0
           ?
           <>
-            <Statitics state={good} text='good' />
-            <Statitics state={neutral} text='neutral' />
-            <Statitics state={bad} text='bad' />
-            <Statitics state={total} text='total' />
-            <Statitics state={average} text='average' />
+            <Statitics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={total}
+              positive={positive}
+              average={average}
+            />
           </>
           :
           <p>No feedback given</p>
