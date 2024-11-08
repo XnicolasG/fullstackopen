@@ -8,13 +8,14 @@ function App() {
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filteredName, setFilteredName] = useState('')
 
+  const findExistingName = (value) => !persons.some(person => person.name.toLowerCase() === value.toLowerCase());
 
   const handleAdd = (e) => {
     e.preventDefault()
-    const findExistingName = persons.find(person => person.name === newName) === undefined
-    if (findExistingName) {
-      
+    if (findExistingName(newName)) {
+
       const newPerson = {
         name: newName,
         number: newNumber,
@@ -35,9 +36,25 @@ function App() {
     setNewNumber(e.target.value)
   };
 
+  const handleFilter = e => {
+    setFilteredName(e.target.value)
+  }
+  const nameList = persons.filter(person => person.name.toLowerCase().includes(filteredName.toLowerCase()))
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <section>
+        <article>
+          <label htmlFor="search">filter shown with </label>
+          <input
+          placeholder='My Mom'
+          value={filteredName}  
+          onChange={handleFilter}
+          id="search" />   
+        </article>
+      </section>
+      <h2>Add a new</h2>
       <form
       onSubmit={handleAdd}
       >
@@ -62,7 +79,7 @@ function App() {
       <h2>Numbers</h2>
       <ul>
         {
-          persons.map(person => (
+          nameList.map(person => (
             <li key={person.id} style={{display:'flex', gap:'8px'}}>
             <p >{person.name}</p>
             <p>{person.number}</p>
