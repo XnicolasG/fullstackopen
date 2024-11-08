@@ -1,11 +1,15 @@
 import { useState } from 'react'
+import { Title } from './components/Title'
+import { Filter } from './components/Filter'
+import { AddForm } from './components/AddForm'
+import { List } from './components/List'
 function App() {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
     { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
     { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
     { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredName, setFilteredName] = useState('')
@@ -42,52 +46,25 @@ function App() {
   const nameList = persons.filter(person => person.name.toLowerCase().includes(filteredName.toLowerCase()))
 
   return (
-    <div>
-      <h2>Phonebook</h2>
-      <section>
-        <article>
-          <label htmlFor="search">filter shown with </label>
-          <input
-          placeholder='My Mom'
-          value={filteredName}  
-          onChange={handleFilter}
-          id="search" />   
-        </article>
-      </section>
-      <h2>Add a new</h2>
-      <form
-      onSubmit={handleAdd}
-      >
-        <div>
-          name: <input
-          onChange={handleNameChange}
-          value={newName}
-          required
-          />
-        </div>
-        <div>
-          number: <input 
-          onChange={handleNumberChange}
-          value={newNumber}
-          required
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {
-          nameList.map(person => (
-            <li key={person.id} style={{display:'flex', gap:'8px'}}>
-            <p >{person.name}</p>
-            <p>{person.number}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+    <main style={{ margin: '0px 10px' }}>
+      <Title title='Phonebook' />
+      <Filter
+        filteredName={filteredName}
+        handleFilter={handleFilter}
+      />
+      <Title title='Add a new' />
+      <AddForm
+        handleAdd={handleAdd}
+        handleNameChange={handleNameChange}
+        newName={newName}
+        handleNumberChange={handleNumberChange}
+        newNumber={newNumber}
+      />
+      <Title title='Numbers' />
+      <List
+        nameList={nameList}
+      />
+    </main>
   )
 }
 
