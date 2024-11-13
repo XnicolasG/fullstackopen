@@ -5,20 +5,22 @@ import { Filter } from './components/Filter'
 import { AddForm } from './components/AddForm'
 import { List } from './components/List'
 import { useEffect } from 'react'
+import phonebook from './services/phonebook'
+
 function App() {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredName, setFilteredName] = useState('')
+  const { getData, addData, deleteData } = phonebook
 
-  useEffect(()=>{
-    axios
-    .get("http://localhost:3001/persons")
-    .then(promise =>{
-      setPersons(promise.data)
-      console.log(promise.data);
-    })
-  },[])
+  useEffect(() => {
+    getData()
+      .then(resp => {
+        setPersons(resp)
+        console.log(resp);
+      })
+  }, [])
 
   const findExistingName = (value) => !persons.some(person => person.name.toLowerCase() === value.toLowerCase());
 
@@ -29,15 +31,25 @@ function App() {
       const newPerson = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1
+        id: (persons.length + 1).toString() 
       }
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+      addData(newPerson)
+      .then(resp => {
+        setPersons(persons.concat(resp))
+        setNewName('')
+        setNewNumber('')
+      })
     } else {
       alert(`${newName} is already added to phonebook`)
     }
   };
+  const handleDelete = ({id,name}) => {
+    window.confirm(`Delete ${name} ?`)
+    ? deleteData(id).then(() => {
+      setPersons(persons.filter(person => person.id !== id))
+    })
+    : console.log(`${name} not deleted !`);
+  }
 
   const handleNameChange = (e) => {
     setNewName(e.target.value)
@@ -68,6 +80,7 @@ function App() {
       />
       <Title title='Numbers' />
       <List
+      handleDelete={handleDelete}
         nameList={nameList}
       />
     </main>
