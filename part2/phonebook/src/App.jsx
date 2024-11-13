@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Title } from './components/Title'
 import { Filter } from './components/Filter'
 import { AddForm } from './components/AddForm'
 import { List } from './components/List'
-import { useEffect } from 'react'
+import { Notification } from './components/Notification'
 import phonebook from './services/phonebook'
 
 function App() {
@@ -12,6 +12,7 @@ function App() {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredName, setFilteredName] = useState('')
+  const [message, setMessage] = useState('')
   const { getData, addData, deleteData, updateData } = phonebook
 
   useEffect(() => {
@@ -40,6 +41,10 @@ function App() {
           setNewName('')
           setNewNumber('')
         })
+        setMessage(`${newName} successfully added`)
+        setTimeout(()=> {
+          setMessage('')
+        },5000)
     } else if (!findExistingName(newName) && findExistingNumber(newNumber)) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one ?`)) {
 
@@ -49,6 +54,10 @@ function App() {
 
         updateData(getId.id, updateNumber)
           .then(updatedPerson => { setPersons(persons.map(person => person.id !== getId.id ? person : updatedPerson)) })
+          setMessage(`${newName}'s number successfully updated`)
+        setTimeout(()=> {
+          setMessage('')
+        },5000)
       }
 
     } else {
@@ -78,6 +87,7 @@ function App() {
 
   return (
     <main style={{ margin: '0px 10px' }}>
+      <Notification message={message} />
       <Title title='Phonebook' />
       <Filter
         filteredName={filteredName}
