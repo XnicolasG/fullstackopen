@@ -57,6 +57,10 @@ button:focus-visible {
   color: rgb(55, 168, 107);
   font-size: 20px;
 }
+.error{
+  color:tomato;
+  font-size: 20px;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

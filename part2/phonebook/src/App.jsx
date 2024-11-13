@@ -12,6 +12,7 @@ function App() {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredName, setFilteredName] = useState('')
+  const [error, setError] = useState(false)
   const [message, setMessage] = useState('')
   const { getData, addData, deleteData, updateData } = phonebook
 
@@ -53,11 +54,21 @@ function App() {
         console.log(updateNumber);
 
         updateData(getId.id, updateNumber)
-          .then(updatedPerson => { setPersons(persons.map(person => person.id !== getId.id ? person : updatedPerson)) })
+          .then(updatedPerson => { setPersons(persons.map(person => person.id !== getId.id ? person : updatedPerson)) 
           setMessage(`${newName}'s number successfully updated`)
         setTimeout(()=> {
           setMessage('')
         },5000)
+      })
+        .catch(error => {
+          console.log(error);
+          setError(true)
+          setMessage(`${newName}'s information has been removed`)
+          setTimeout(()=> {
+            setMessage('')
+            setError(false)
+          },5000)
+        })
       }
 
     } else {
@@ -87,7 +98,7 @@ function App() {
 
   return (
     <main style={{ margin: '0px 10px' }}>
-      <Notification message={message} />
+      <Notification classType={error} message={message} />
       <Title title='Phonebook' />
       <Filter
         filteredName={filteredName}
