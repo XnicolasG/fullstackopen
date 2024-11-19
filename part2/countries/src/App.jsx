@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react'
-import countries from './services/countries'
 import { Details } from './components/Details'
 import { Filter } from './components/Filter'
+import countries from './services/countries'
+import weather from './services/weather'
 
 function App() {
   const [list, setList] = useState([])
   const [country, setCountry] = useState('')
   const [chooseCountry, setChooseCountry] = useState('')
+  const [activeWeather, setActiveWeather] = useState(false)
   const { getData } = countries
-  console.log(list)
-
+  console.log(country)
+  
+  
   useEffect(() => {
     getData()
       .then(resp => {
         setList(resp)
       })
-  }, [])
+    }, [])
 
   const handleInputChange = e => {
     setCountry((e.target.value).trimStart())
@@ -34,12 +37,12 @@ function App() {
   const countryDetails = chooseCountry.length > 0
   ? countryList.find(c => c.name.common === chooseCountry)
   : list.find(c => c.name.common === countryList[0])
-
-  console.log(countryDetails, chooseCountry.length > 0);
+  
+  console.log('countryDetails',countryDetails, countryList.length);
 
   return (
     <main className='main'>
-      <Filter country={country} handleInputChange={handleInputChange} />
+      <Filter chooseCountry={chooseCountry} setChooseCountry={setChooseCountry} country={country} handleInputChange={handleInputChange} />
       <section>
         {
           countryList.length > 10

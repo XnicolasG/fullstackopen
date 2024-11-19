@@ -1,4 +1,5 @@
 import React from 'react'
+import { WeatherDetail } from './WeatherDetail'
 
 export const Details = ({ capital, area, languages, flag, name }) => {
     return (
@@ -23,6 +24,7 @@ export const Details = ({ capital, area, languages, flag, name }) => {
                     <img src={flag} alt={name} />
                 </div>
             </ul>
+            <WeatherDetail city={capital} />
         </section>
     )
 }
