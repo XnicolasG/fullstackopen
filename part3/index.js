@@ -9,6 +9,7 @@ const requestLogger = (request, response, next) => {
     next()
 }
 app.use(express.json())
+app.use(express.static('dist'));
 app.use(requestLogger)
 app.use(cors())
 
@@ -30,9 +31,9 @@ let notes = [
     }
 ]
 
-app.get('/', (request, response) => {
+app.get('/', (request, response) => { 
     response.send('<h1>Hello World!</h1>')
-})
+});
 
 app.get('/api/notes', (request, response) => {
     response.json(notes)
