@@ -8,7 +8,7 @@ import { Notification } from './components/Notification'
 import phonebook from './services/phonebook'
 
 function App() {
-  const [persons, setPersons] = useState([])
+  const [persons, setPersons] = useState(null)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredName, setFilteredName] = useState('')
@@ -94,8 +94,10 @@ function App() {
   const handleFilter = e => {
     setFilteredName((e.target.value).trim())
   }
-  const nameList = persons.filter(person => person.name?.toLowerCase().includes(filteredName?.toLowerCase()))
-
+  const nameList = persons?.filter(person => person.name?.toLowerCase().includes(filteredName?.toLowerCase()))
+  if (!persons) { 
+    return null 
+  }
   return (
     <main style={{ margin: '0px 10px' }}>
       <Notification classType={error} message={message} />
