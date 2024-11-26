@@ -33,6 +33,7 @@ if (name && number !== undefined) {
     })
 }else {
     Person.find({}).then(result => {
+        console.log('phonebook:');
         result.forEach(person => {
             console.log(person);
         })
