@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const morgan = require('morgan')
 const cors = require('cors')
@@ -59,12 +60,12 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-const generateId = (max) => {
-    const maxId = persons.length > 0
-        ? Math.floor(Math.random() * max)
-        : 0
-    return maxId
-}
+// const generateId = (max) => {
+//     const maxId = persons.length > 0
+//         ? Math.floor(Math.random() * max)
+//         : 0
+//     return maxId
+// }
 
 app.post('/api/persons', (request, response) => {
     const body = request.body;
@@ -73,18 +74,19 @@ app.post('/api/persons', (request, response) => {
             error: 'Name or number missing'
         });
     }
-    if (persons.some(p => p.name === body.name)) {
-        return response.status(409).json({
-            error: 'name must be unique'
-        })
-    } 
-    const person = {
+    // if (persons.some(p => p.name === body.name)) {
+    //     return response.status(409).json({
+    //         error: 'name must be unique'
+    //     })
+    // } 
+    const person = new Person( {
         name: body.name,
         number: body.number,
-        id: generateId(5000)
-    };
-    persons = persons.concat(person);
-    response.json(person);
+    });
+    person.save().then(personSaved => {
+        response.json(personSaved);
+    })
+    // persons = persons.concat(person);
 });
 
 const PORT = process.env.PORT || 3001
