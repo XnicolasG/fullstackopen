@@ -36,16 +36,26 @@ function App() {
         number: newNumber,
         id: (persons.length + 1).toString()
       }
-      addData(newPerson)
-        .then(resp => {
-          setPersons(persons.concat(resp))
-          setNewName('')
-          setNewNumber('')
-        })
-        setMessage(`${newName} successfully added`)
-        setTimeout(()=> {
+      if (newName.length < 3) {
+        setMessage(`Person validation failed: name: '${newName}' is shorter than minimun length (3)`)
+        setError(true)
+        setTimeout(() => {
           setMessage('')
-        },5000)
+        }, 5000)
+      } else {
+
+        addData(newPerson)
+          .then(resp => {
+            setPersons(persons.concat(resp))
+            setNewName('')
+            setNewNumber('')
+          })
+        setMessage(`${newName} successfully added`)
+        setTimeout(() => {
+          setMessage('')
+        }, 5000)
+      }
+
     } else if (!findExistingName(newName) && findExistingNumber(newNumber)) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one ?`)) {
 
@@ -54,21 +64,22 @@ function App() {
         console.log(updateNumber);
 
         updateData(getId.id, updateNumber)
-          .then(updatedPerson => { setPersons(persons.map(person => person.id !== getId.id ? person : updatedPerson)) 
-          setMessage(`${newName}'s number successfully updated`)
-        setTimeout(()=> {
-          setMessage('')
-        },5000)
-      })
-        .catch(error => {
-          console.log(error);
-          setError(true)
-          setMessage(`${newName}'s information has been removed`)
-          setTimeout(()=> {
-            setMessage('')
-            setError(false)
-          },5000)
-        })
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id !== getId.id ? person : updatedPerson))
+            setMessage(`${newName}'s number successfully updated`)
+            setTimeout(() => {
+              setMessage('')
+            }, 5000)
+          })
+          .catch(error => {
+            console.log(error);
+            setError(true)
+            setMessage(`${newName}'s information has been removed`)
+            setTimeout(() => {
+              setMessage('')
+              setError(false)
+            }, 5000)
+          })
       }
 
     } else {
@@ -95,8 +106,8 @@ function App() {
     setFilteredName((e.target.value).trim())
   }
   const nameList = persons?.filter(person => person.name?.toLowerCase().includes(filteredName?.toLowerCase()))
-  if (!persons) { 
-    return null 
+  if (!persons) {
+    return null
   }
   return (
     <main style={{ margin: '0px 10px' }}>
