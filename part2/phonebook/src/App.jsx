@@ -37,10 +37,10 @@ function App() {
         id: (persons.length + 1).toString()
       }
       if (newName.length < 3) {
-        setMessage(`Person validation failed: name: '${newName}' is shorter than minimun length (3)`)
+        setMessage(`Person validation failed: name: '${newName}' is shorter than minimun allowed length (3)`)
         setError(true)
         setTimeout(() => {
-          setMessage('')
+          setMessage('') 
         }, 5000)
       } else {
 
