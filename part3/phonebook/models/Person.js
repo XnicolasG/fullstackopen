@@ -2,6 +2,8 @@ require('dotenv').config();
 const mongoose = require('mongoose')
 
 const url = process.env.MONGOURI
+console.log('uri: ', url);
+
 mongoose.set('strictQuery', false)
 mongoose.connect(url)
   .then(result => {
@@ -12,7 +14,11 @@ mongoose.connect(url)
   })
 
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+      type: String,
+      required: true,
+      minLength: 3
+    }, 
     number: String
 })
 
