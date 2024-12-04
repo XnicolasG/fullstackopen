@@ -10,7 +10,7 @@ app.use(express.json())
 app.use(express.static('dist'))
 app.use(morgan('tiny'))
 
-morgan.token('body', (req)=>{
+morgan.token('body', (req) => {
     return JSON.stringify(req.body)
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
@@ -44,51 +44,78 @@ app.get('/info', (request, response) => {
 })
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(persons => {
+        persons.forEach(person => {
+            console.log(person.id);
+        })
+
         response.json(persons)
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 })
 app.get('/api/persons/:id', (request, response) => {
     Person.findById((request.params.id)).then(person => {
-     response.json(person)
+        response.json(person)
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
     Person.findByIdAndDelete(request.params.id).then(result => {
+        console.log(result)
+
         response.status(204).end()
     })
-    .catch(error => next(error)
-    )
+        .catch(error => next(error)
+        )
 })
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body;
     if (!body.name || !body.number) {
         return response.status(404).json({
             error: 'Name or number missing'
         });
     }
-    // if (persons.some(p => p.name === body.name)) {
-    //     return response.status(409).json({
-    //         error: 'name must be unique'
-    //     })
-    // } 
-    const person = new Person( {
+    const person = new Person({
         name: body.name,
         number: body.number,
     });
     person.save().then(personSaved => {
         response.json(personSaved);
     })
-    // persons = persons.concat(person);
+        .catch(error => next(error))
+
 });
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
+    Person.find({ name: person.name })
+        .then(result => {
+            console.log(result)
+            
+            result.length > 0
+                ?
+                Person.findByIdAndUpdate(result[0]._id, person, { new: true })
+                    .then(updatePerson => {
+                        response.json(updatePerson)
+                    })
+                    .catch(error => next(error))
+                :
+                response.status(404).json({
+                    error: 'Name was not found !'
+                })
+        })
+        .catch(error => next(error))
+})
 
 const ErrorHandler = (error, resquest, response, next) => {
     console.log(error.message);
-    if(error.name === 'CastError'){
+    if (error.name === 'CastError') {
         return respose.status(400).send({ error: 'malformatted id' })
     }
     next(error)
