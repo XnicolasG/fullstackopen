@@ -22,6 +22,7 @@ export const AddForm = ({
                 number: <input
                     onChange={handleNumberChange}
                     value={newNumber}
+                    placeholder='example: 12-345678'
                     required
                 />
             </div>

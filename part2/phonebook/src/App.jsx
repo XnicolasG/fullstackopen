@@ -29,6 +29,7 @@ function App() {
 
   const handleAdd = (e) => {
     e.preventDefault()
+    const numberRegex = /^\d{2,3}-\d{5,}$/;
     if (findExistingName(newName)) {
 
       const newPerson = {
@@ -40,9 +41,18 @@ function App() {
         setMessage(`Person validation failed: name: '${newName}' is shorter than minimun allowed length (3)`)
         setError(true)
         setTimeout(() => {
-          setMessage('') 
+          setMessage('')
+          setError(false) 
         }, 5000)
-      } else {
+      } else if (!numberRegex.test(newNumber)){
+        setMessage(`Person validation failed: number '${newNumber}' must be in the format XX-XXXXXX or XXX-XXXXX`)
+        setError(true)
+        setTimeout(() => {
+          setMessage('') 
+          setError(false) 
+        }, 5000)
+      }
+      else {
 
         addData(newPerson)
           .then(resp => {
@@ -50,6 +60,7 @@ function App() {
             setNewName('')
             setNewNumber('')
           })
+          setError(false)
         setMessage(`${newName} successfully added`)
         setTimeout(() => {
           setMessage('')
