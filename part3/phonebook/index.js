@@ -54,18 +54,13 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
+    Person.findByIdAndDelete(request.params.id).then(result => {
+        response.status(204).end()
+    })
+    .catch(error => console.log(error)
+    )
 })
 
-// const generateId = (max) => {
-//     const maxId = persons.length > 0
-//         ? Math.floor(Math.random() * max)
-//         : 0
-//     return maxId
-// }
 
 app.post('/api/persons', (request, response) => {
     const body = request.body;
