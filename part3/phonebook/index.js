@@ -53,10 +53,11 @@ app.get('/api/persons', (request, response) => {
         .catch(error => next(error))
 })
 app.get('/api/persons/:id', (request, response) => {
-    Person.findById((request.params.id)).then(person => {
+    Person.findById((request.params.id))
+    .then(person => {
         response.json(person)
     })
-        .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
