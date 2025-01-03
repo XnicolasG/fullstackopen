@@ -1,6 +1,6 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
-const { dummy, totalLikes, favoriteBlog } = require('../utils/list_helpers')
+const { dummy, totalLikes, favoriteBlog, mostBlogs } = require('../utils/list_helpers')
 
 test('Dummy returns 1', () => {
     const blogs = []
@@ -43,10 +43,30 @@ describe('return favorite blog', () => {
 
     test('bring the object with most likes', () => {
         const result = favoriteBlog(listOfBlogs)
-        assert.deepStrictEqual(result, {
+        assert.deepStrictEqual(result, listOfBlogs[0])
+    })
+})
+
+describe('Return the top author', () => {
+    const listOfBlogs = [
+        {
             title: "Canonical string reduction",
             author: "Edsger W. Dijkstra",
             likes: 12
-        })
+        },
+        {
+            title: "Tolkien's Story",
+            author: "anon",
+            likes: 8
+        },
+        {
+            title: "Tolkien's books",
+            author: "anon",
+            likes: 5
+        }
+    ]
+    test('return the name of the authors with most written blogs', ()=> {
+        const result = mostBlogs(listOfBlogs)
+        assert.deepStrictEqual(result, {author: 'anon', blogs: 2})
     })
 })
