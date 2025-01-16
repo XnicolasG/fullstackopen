@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+require('express-async-errors');
 const notesRouter = require('./controllers/note')
 const cors = require('cors');
 app.use(express.static('dist'));
