@@ -11,6 +11,8 @@ blogRoutes.get('/', async (request, response) => {
 });
 
 blogRoutes.post('/', async (request, response) => {
+    const { title, author, url, likes } = request.body
+    !title || !url && response.status(400).json({error: 'title o url missing '})
     try {
         const blog = new Blog(request.body);
         const savedBlog = await blog.save();

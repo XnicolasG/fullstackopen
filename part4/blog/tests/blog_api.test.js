@@ -44,7 +44,7 @@ test('A missing likes property will have 0 as default value', async () => {
         url: 'http://test.com'
     }
 
-     const response = await api
+    const response = await api
         .post('/api/blog')
         .send(newBlog)
         .expect(201)
@@ -52,6 +52,31 @@ test('A missing likes property will have 0 as default value', async () => {
 
     const savedBlog = await response.body
     assert.strictEqual(savedBlog.likes, 0)
+})
+
+test('Cannot post a blog with missing properties', async () => {
+    const blogWithoutUrl = {
+        title: 'Test Blog',
+        author: 'Percy',
+        Likes: 5
+    }
+    const blogWithoutTitle = {
+        author: 'Percy',
+        url: 'http://test.com',
+        likes: 5
+    }
+    await api
+        .post('/api/blog')
+        .send(blogWithoutUrl)
+        .expect(400)
+        
+    await api
+        .post('/api/blog')
+        .send(blogWithoutTitle)
+        .expect(400)
+
+    const blogsAtEnd = await blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, initialBlogs.length)
 })
 
 test('Post a valid blog ', async () => {
