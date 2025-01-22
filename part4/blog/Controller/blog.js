@@ -11,10 +11,13 @@ blogRoutes.get('/', async (request, response) => {
 });
 
 blogRoutes.post('/', async (request, response) => {
-    const blog = new Blog(request.body)
-
-    const savedBlog = blog.save()
-    response.status(201).json(savedBlog)
-})
+    try {
+        const blog = new Blog(request.body);
+        const savedBlog = await blog.save();
+        response.status(201).json(savedBlog);
+    } catch (error) {
+        response.status(500).json({ error: 'Failed to save the blog' });
+    }
+});
 
 module.exports = blogRoutes

@@ -37,7 +37,24 @@ test('Blogs were recived the property id instead of _id', async () => {
     })
 })
 
-test('Post a valid blog post', async () => {
+test('A missing likes property will have 0 as default value', async () => {
+    const newBlog = {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'http://test.com'
+    }
+
+     const response = await api
+        .post('/api/blog')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const savedBlog = await response.body
+    assert.strictEqual(savedBlog.likes, 0)
+})
+
+test('Post a valid blog ', async () => {
     const newBlog = {
         title: "New Blog Post",
         author: "David Johnson",
