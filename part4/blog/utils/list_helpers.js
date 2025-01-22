@@ -1,3 +1,5 @@
+const Blog = require("../models/blog");
+
 const dummy = blogs => {
     if (blogs) return 1;
 }
@@ -64,10 +66,60 @@ const mostLikes = blogs => {
     }
     return {author: topAuthor, likes: totalLikes}
 }
+
+const initialBlogs = [
+    {
+        title: 'Understanding JavaScript Closures',
+        author: 'John Doe',
+        url: 'https://example.com/javascript-closures',
+        likes: 10
+    },
+    {
+        title: 'Introduction to Node.js',
+        author: 'Jane Smith',
+        url: 'https://example.com/intro-to-nodejs',
+        likes: 15
+    },
+    {
+        title: 'Exploring Async and Await in JavaScript',
+        author: 'Alice Brown',
+        url: 'https://example.com/async-await',
+        likes: 20
+    },
+    {
+        title: 'Building REST APIs with Express',
+        author: 'Bob Johnson',
+        url: 'https://example.com/rest-apis-express',
+        likes: 5
+    },
+    {
+        title: 'A Guide to MongoDB for Beginners',
+        author: 'Charlie Davis',
+        url: 'https://example.com/mongodb-guide',
+        likes: 25
+    }
+];
+
+const nonExistingId = async () => {
+    const note = new Note({ content: 'willremovethissoon' })
+    await note.save()
+    await note.deleteOne()
+
+    return note._id.toString()
+}
+
+const blogsInDb = async () => {
+    const blogs = await Blog.find({})
+    return blogs.map(blog => blog.toJSON())
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
-    mostLikes
+    mostLikes,
+    initialBlogs,
+    nonExistingId,
+    blogsInDb
 }
