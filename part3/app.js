@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 require('express-async-errors');
 const notesRouter = require('./controllers/note')
+const usersRouter = require('./controllers/users')
 const cors = require('cors');
 app.use(express.static('dist'));
 app.use(express.json());
@@ -12,6 +13,7 @@ app.use(cors())
 app.use(middleware.requestLogger);
 
 app.use('/api/notes', notesRouter)
+app.use('/api/users', usersRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler);
