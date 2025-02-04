@@ -1,8 +1,10 @@
 const blogRoutes = require('express').Router();
-const Blog = require('../models/blog')
+const Blog = require('../models/blog');
+const User = require('../models/user');
 
 blogRoutes.get('/', async (request, response) => {
-    const blogs = await Blog.find({})
+    const blogs = await Blog
+        .find({}).populate('user', {username:1,name:1})
     if (blogs.length === 0) {
         response.status(200).json({ message: 'No blogs found' });
     } else {
@@ -20,20 +22,21 @@ blogRoutes.get('/:id', async (request, response) => {
 })
 
 blogRoutes.post('/', async (request, response) => {
-    const { title, author, url, likes } = request.body
-    !title || !url && response.status(400).json({error: 'title o url missing '})
-    try {
-        const blog = new Blog({
-            title,
-            author: author || 'Anonymous',
-            url,
-            likes: likes || 0
-        });
-        const savedBlog = await blog.save();
-        response.status(201).json(savedBlog);
-    } catch (error) {
-        response.status(500).json({ error: 'Failed to save the blog' });
-    }
+    const body = request.body
+    !body.title || !body.url && response.status(400).json({ error: 'title o url missing ' })
+
+    const user = await User.findById(body.userId)
+    const blog = new Blog({
+        title: body.title,
+        author: body.author || 'Anonymous',
+        url: body.url,
+        likes: body.likes || 0,
+        user: user.id
+    });
+    const savedBlog = await blog.save();
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+    response.status(201).json(savedBlog);
 });
 
 blogRoutes.delete('/:id', async (request, response) => {
@@ -48,9 +51,9 @@ blogRoutes.put('/:id', async (request, response) => {
         author,
         url,
         likes
-        }
-        const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true, runValidators: true, context: 'query'})
-        response.json(updatedBlog)
+    }
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true, runValidators: true, context: 'query' })
+    response.json(updatedBlog)
 })
 
 module.exports = blogRoutes
