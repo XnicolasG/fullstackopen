@@ -8,6 +8,8 @@ const loginRouter = require('./Controller/login');
 
 app.use(express.json());
 app.use(cors())
+app.use(middleware.getTokenFrom)
+
 app.use('/api/blog', blogRoutes)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)

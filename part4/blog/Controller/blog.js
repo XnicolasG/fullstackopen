@@ -1,6 +1,16 @@
+require('dotenv').config()
 const blogRoutes = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken')
+
+// const getTokenFrom = request => {
+//     const authorization = request.get('authorization')
+//     if (authorization && authorization.startsWith('Bearer ')) {
+//         return authorization.replace('Bearer ', '')
+//     }
+//     return null
+// }
 
 blogRoutes.get('/', async (request, response) => {
     const blogs = await Blog
@@ -24,8 +34,13 @@ blogRoutes.get('/:id', async (request, response) => {
 blogRoutes.post('/', async (request, response) => {
     const body = request.body
     !body.title || !body.url && response.status(400).json({ error: 'title o url missing ' })
+    // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+        return response.status(401).json({ Error: 'Token invalid'})
+    }
 
-    const user = await User.findById(body.userId)
+    const user = await User.findById(decodedToken.id)
     const blog = new Blog({
         title: body.title,
         author: body.author || 'Anonymous',

@@ -13,7 +13,7 @@ const errorHandler = (error, request, response, next) => {
         return response.status(400).send({ error: error.message })
     } else if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
         return response.status(400).json({ error: 'Expected `userame` to be unique' })
-    } else if (error.name === 'JsonWebTokenError'){
+    } else if (error.name === 'JsonWebTokenError') {
         return response.status(401).json({ error: 'invalid token' })
     } else if (error.name === 'TokenExpiredError') {
         return response.status(401).json({
@@ -25,7 +25,18 @@ const errorHandler = (error, request, response, next) => {
     next(error)
 }
 
+const getTokenFrom = (request, response, next) => {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.startsWith('Bearer ')) {
+        request.token = authorization.replace('Bearer ', '')
+    } else {
+        request.token = null
+    }
+    next()
+}
+
 module.exports = {
     unknownEndpoint,
-    errorHandler
+    errorHandler,
+    getTokenFrom
 }
