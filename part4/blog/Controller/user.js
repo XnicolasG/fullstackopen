@@ -35,11 +35,13 @@ module.exports = usersRouter
 {
     "username": "SrPizza",
     "name": "Nicolás",
-    "password": "123456",
+    "password": "123456"
+    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNyUGl6emEiLCJpZCI6IjY3OWQ4YjQwM2Q1NGI1YjA3NGM5Zjg3OSIsImlhdCI6MTczODg2MjEwMH0.Jk6LC2G-CZVrEoo_GuMaMGVAmpBKi64nSXlg8Mp7dcY
 },
 {
     "username": "Sof", 
     "name": "Sofía", 
     "password": "as"
+    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZiIsImlkIjoiNjdhMTRiODU0NmE0ZWQ0ZGUxNjUwNTBkIiwiaWF0IjoxNzM4ODYxMTUxfQ.TwDBXFI-FopTmfvlTPWi73kXVT8aozT0N7DjJZdnl9M
 }
 */

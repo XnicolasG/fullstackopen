@@ -1,4 +1,7 @@
+require('dotenv').config()
+const User = require('../models/user')
 const logger = require('./logger')
+const jwt = require('jsonwebtoken')
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
@@ -35,14 +38,20 @@ const getTokenFrom = (request, response, next) => {
     next()
 }
 
-const userExtractor = (request, response, next) => {
-    
-    
+const userExtractor = async (request, response, next) => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (request.token) {
+        const user = await User.findById(decodedToken.id)
+        request.user = user
+    }
+    request.user = null
+
     next()
 }
 
 module.exports = {
     unknownEndpoint,
     errorHandler,
-    getTokenFrom
+    getTokenFrom,
+    userExtractor
 }

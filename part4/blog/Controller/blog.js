@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken')
 
 blogRoutes.get('/', async (request, response) => {
     const blogs = await Blog
-        .find({}).populate('user', {username:1,name:1})
+        .find({}).populate('user', { username: 1, name: 1 })
     if (blogs.length === 0) {
         response.status(200).json({ message: 'No blogs found' });
     } else {
@@ -37,10 +37,10 @@ blogRoutes.post('/', async (request, response) => {
     // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!decodedToken.id) {
-        return response.status(401).json({ Error: 'Token invalid'})
+        return response.status(401).json({ Error: 'Token invalid' })
     }
 
-    const user = await User.findById(decodedToken.id)
+    const user = request.user
     const blog = new Blog({
         title: body.title,
         author: body.author || 'Anonymous',
@@ -56,17 +56,21 @@ blogRoutes.post('/', async (request, response) => {
 
 blogRoutes.delete('/:id', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    console.log('decodedToken: ', decodedToken);
+
     if (!decodedToken.id) {
-        return response.status(401).json({ Error: 'Token invalid'})
+        return response.status(401).json({ Error: 'Token invalid' })
     }
     const blog = await Blog.findById(request.params.id)
-    if (!blog){
-        return response.status(404).json({ Error: 'Blog not found'})
+    console.log('blog: ', blog);
+
+    if (!blog) {
+        return response.status(404).json({ Error: 'Blog not found' })
     }
-    if (blog.user.toString() !== decodedToken.id.toString()){
-        return response.status(401).json({ Error: 'You cannot delete this blog'})
+    if (blog.user.toString() !== decodedToken.id.toString()) {
+        return response.status(401).json({ Error: 'You cannot delete this blog' })
     }
-    
+
     await Blog.findByIdAndDelete(request.params.id)
     response.status(204).end()
 })
@@ -91,5 +95,11 @@ module.exports = blogRoutes
     "author": "Anonymous",
     "url": "https://example.com/SQL",
     "likes": 23,
+}
+{
+    "title": "Exploring React architecture",
+    "author": "Anonymous",
+    "url": "https://www.geeksforgeeks.org/react-architecture-pattern-and-best-practices/",
+    "id": "67a39eea72bb2bdc49e99faf"
 }
 */
