@@ -35,6 +35,12 @@ const getTokenFrom = (request, response, next) => {
     next()
 }
 
+const userExtractor = (request, response, next) => {
+    
+    
+    next()
+}
+
 module.exports = {
     unknownEndpoint,
     errorHandler,
