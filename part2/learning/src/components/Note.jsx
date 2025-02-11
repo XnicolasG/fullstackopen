@@ -1,9 +1,8 @@
-import React from 'react'
 
 export const Note = ({note,toggleImportance}) => {
   const label = note.important
     ? 'make not important' : 'make important'
-    console.log('Note',note);
+    // console.log('Note',note);
     
   return (
     <li>

@@ -3,24 +3,27 @@ import { Note } from './components/Note'
 import noteService from './services/note'
 import { Notification } from './components/Notificaction'
 import { Footer } from './components/Footer'
+import loginService from './services/login'
+import { LoginForm } from './components/LoginForm'
+import { NoteForm } from './components/NoteForm'
 
 function App() {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMsg, setErrorMsg] = useState(null)
-  console.log('App', notes);
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
   const { getAll, create, update } = noteService
 
   useEffect(() => {
     console.log('effect')
-    getAll()
-      .then(response => {
-        console.log(response);
-
-        setNotes(response)
-      })
+    getAll().then(response => {
+      console.log(response);
+      setNotes(response)
+    })
       .catch(error => {
         console.log(error);
 
@@ -28,10 +31,32 @@ function App() {
   }, [])
 
 
+  const handleLogin = async e => {
+    e.preventDefault()
+    try {
+      const user = await loginService.login({
+        username,
+        password
+      })
+      noteService.setToken(user.token)
+      setUser(user)
+      console.log('user ',user);
+      setUsername('')
+      setPassword('')
+    } catch (error) {
+      setErrorMsg('Wrong credentials', error)
+      setTimeout(() => {
+        setErrorMsg(null)
+      }, 5000)
+    }
+
+    console.log('Logging in with: ', username, password);
+  }
+
   const handleNotesToShow = showAll
     ? notes
     : notes.filter(note => note.important)
-  console.log(handleNotesToShow);
+  // console.log(handleNotesToShow);
 
 
   const handleAdd = (e) => {
@@ -76,10 +101,30 @@ function App() {
       })
   }
 
+
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMsg} />
+      {user === null
+        ? <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+        />
+        :
+        <div>
+          <p>{user.name} logged-in</p>
+          <NoteForm 
+          handleAdd={handleAdd}
+          newNote={newNote}
+          handleNoteChange={handleNoteChange}
+          />
+        </div>
+      }
+
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -93,15 +138,7 @@ function App() {
             note={note} />
         )}
       </ul>
-      <form onSubmit={handleAdd} >
-        <input
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-        <button type="submit">
-          save
-        </button>
-      </form>
+
       <Footer />
     </div>
   )
