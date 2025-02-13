@@ -40,7 +40,9 @@ function App() {
       })
       noteService.setToken(user.token)
       setUser(user)
-      console.log('user ',user);
+      window.localStorage.setItem(
+        'loggedNoteAppUser', JSON.stringify(user)
+      )
       setUsername('')
       setPassword('')
     } catch (error) {
@@ -52,6 +54,20 @@ function App() {
 
     console.log('Logging in with: ', username, password);
   }
+
+  useEffect(()=>{
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteAppUser')
+    if (loggedUserJSON){
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+      console.log('User logged-in');
+      
+    }else{
+      console.log('User is not logged');
+    }
+    
+  },[])
 
   const handleNotesToShow = showAll
     ? notes
@@ -117,10 +133,10 @@ function App() {
         :
         <div>
           <p>{user.name} logged-in</p>
-          <NoteForm 
-          handleAdd={handleAdd}
-          newNote={newNote}
-          handleNoteChange={handleNoteChange}
+          <NoteForm
+            handleAdd={handleAdd}
+            newNote={newNote}
+            handleNoteChange={handleNoteChange}
           />
         </div>
       }
