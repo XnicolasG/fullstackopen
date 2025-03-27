@@ -46,12 +46,11 @@ function App() {
       setUsername('')
       setPassword('')
     } catch (error) {
-      setErrorMsg('Wrong credentials', error)
+      setErrorMsg('Wrong credentials, please try again', error)
       setTimeout(() => {
         setErrorMsg(null)
-      }, 5000)
+      }, 4000)
     }
-
     console.log('Logging in with: ', username, password);
   }
 
@@ -61,10 +60,10 @@ function App() {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       noteService.setToken(user.token)
-      console.log('User logged-in');
+      console.log('User logged-in sucesfully');
       
     }else{
-      console.log('User is not logged');
+      console.log('User is not logged, please login');
     }
     
   },[])
@@ -72,7 +71,6 @@ function App() {
   const handleNotesToShow = showAll
     ? notes
     : notes.filter(note => note.important)
-  // console.log(handleNotesToShow);
 
 
   const handleAdd = (e) => {
