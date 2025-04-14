@@ -1,7 +1,7 @@
 import axios from 'axios'
 const url = '/api/notes';
 
-let token;
+let token = null;
 
 const setToken = newToken => {
     token = `Bearer ${newToken}`

@@ -54,19 +54,19 @@ function App() {
     console.log('Logging in with: ', username, password);
   }
 
-  useEffect(()=>{
+  //verify the details of a user that already logged in
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteAppUser')
-    if (loggedUserJSON){
+    if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       noteService.setToken(user.token)
       console.log('User logged-in sucesfully');
-      
-    }else{
+    } else {
       console.log('User is not logged, please login');
     }
-    
-  },[])
+
+  }, [])
 
   const handleNotesToShow = showAll
     ? notes
@@ -92,6 +92,11 @@ function App() {
     setNewNote(e.target.value)
     console.log(e.target.value);
 
+  }
+  const handleLogout = e => {
+    e.preventDefault()
+    window.localStorage.removeItem('loggedNoteAppUser')
+    setUser(null)
   }
 
   const toggleImportanceOf = (id) => {
@@ -130,7 +135,14 @@ function App() {
         />
         :
         <div>
-          <p>{user.name} logged-in</p>
+          <section className='userInfo'>
+            <p>{user.name} logged-in</p>
+            <button
+              onClick={handleLogout}
+              className='userInfo_logout'>
+              logout
+            </button>
+          </section>
           <NoteForm
             handleAdd={handleAdd}
             newNote={newNote}

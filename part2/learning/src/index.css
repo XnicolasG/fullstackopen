@@ -61,6 +61,14 @@ button:focus-visible {
   padding: 10px;
   margin-bottom: 10px;
 }
+.userInfo{
+  display: flex;
+  gap: 10px;
+}
+.userInfo_logout:hover{
+  background: tomato;
+  transition: all .5s ease-in-out;
+}
 
 @media (prefers-color-scheme: light) {
   :root {
