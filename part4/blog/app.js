@@ -9,8 +9,9 @@ const loginRouter = require('./Controller/login');
 app.use(express.json());
 app.use(cors())
 app.use(middleware.getTokenFrom)
+app.use(middleware.userExtractor)
 
-app.use('/api/blog', middleware.userExtractor, blogRoutes)
+app.use('/api/blog', blogRoutes)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
