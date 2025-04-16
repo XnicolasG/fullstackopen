@@ -12,12 +12,22 @@ const getAll = async () => {
         const request = await axios.get(url);
         return request.data;
     } catch (error) {
-        console.log('Error in getAll', error);
-        return []; 
+        console.error('Error in getAll', error);
+        return [];
     }
 };
 
+const createBlog = async newBlog => {
+    console.log(token);
+    const config = {
+        headers: { Authorization: token },
+    }
+    const response = await axios.post(url, newBlog, config)
+    return response.data
+}
+
 export default {
     getAll,
-    setToken
+    setToken,
+    createBlog
 };

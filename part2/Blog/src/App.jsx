@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import blogService from './services/blog';
 import { Blog } from './components/Blog';
 import { LoginForm } from './components/LoginForm';
+import { CreateForm } from './components/CreateForm';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
   const [userState, setUserState] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  const { getAll, setToken } = blogService;
+  const { getAll,setToken,createBlog} = blogService;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,18 +24,35 @@ function App() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-        const user = JSON.parse(loggedUserJSON)
-        setUserState(user)
-        setToken(user.token)
-        console.log('User logged-in sucesfully');
-    } else {
-        console.log('User is not logged, please login');
-    }
-}, [])
+  
 
+  useEffect(() => {
+      const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
+      if (loggedUserJSON) {
+          const user = JSON.parse(loggedUserJSON);
+          setUserState(user);
+          setToken(user.token); 
+          console.log('User logged-in succesfully');
+      } else {
+          console.log('User is not logged, please login');
+      }
+  }, []);
+
+  const handleAdd = (e, values, setValues) => {
+    e.preventDefault()
+    const blogObject = {...values, 
+        id:(blogs.length + 1).toString(),
+        likes: Math.floor(Math.random() * 60)}
+    createBlog(blogObject)
+    .then(resp => {
+        setBlogs(blogs.concat(resp))
+        setValues({
+            title: '',
+            author: '',
+            url: ''
+        })
+    })
+}
   return (
     <section className="w-lvw">
       <nav className="flex flex-wrap justify-around items-center p-2">
@@ -49,17 +67,22 @@ function App() {
       <main>
         {
           userState ?
-          <ul className='p-2'>
-          {
-            blogs.map((item) =>
-              <Blog
-                key={item.id}
-                blogItem={item}
+            <section>
+              <CreateForm 
+              handleAdd={handleAdd}
               />
-            )
-          }
-        </ul>
-        : null
+              <ul className='p-2'>
+                {
+                  blogs.map((item) =>
+                    <Blog
+                      // key={item.id}
+                      blogItem={item}
+                    />
+                  )
+                }
+              </ul>
+            </section>
+            : null
         }
       </main>
     </section>

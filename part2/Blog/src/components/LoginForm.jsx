@@ -39,10 +39,10 @@ export const LoginForm = ({ userState, setUserState, errorMsg, setErrorMsg, setT
         <section className='flex flex-col'>
             {
                 userState ?
-                    <section>
+                    <section className='flex items-center gap-2 '>
                         <p>Logged in as {userState.username}</p>
                         <button
-                        className='hover:text-red-600 transition-all'
+                        className='hover:text-red-500 transition-all'
                         onClick={handleLogout}
                         >
                             Exit
