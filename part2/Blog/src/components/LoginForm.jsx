@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import loginServices from '../services/login';
 
-export const LoginForm = ({ userState, setUserState, errorMsg, setErrorMsg, setToken }) => {
+export const LoginForm = ({ userState, setUserState, message, setMessage, setToken }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -16,14 +16,18 @@ export const LoginForm = ({ userState, setUserState, errorMsg, setErrorMsg, setT
             window.localStorage.setItem(
                 'loggedBlogAppUser', JSON.stringify(user)
             )
+            setMessage({ ...message, success: `Welcome ${username} !` })
+            setTimeout(() => {
+                setMessage({ ...message, success: null })
+            }, 4000);
             setUsername('')
             setPassword('')
             console.warn('User Logged !');
 
         } catch (error) {
-            setErrorMsg('Wrong credentials, please try again', error)
+            setMessage({...message, error:`Wrong credentials, please try again ${error}`})
             setTimeout(() => {
-                setErrorMsg(null)
+                setMessage({...message, error:null})
             }, 4000)
         }
     }
@@ -32,6 +36,10 @@ export const LoginForm = ({ userState, setUserState, errorMsg, setErrorMsg, setT
         e.preventDefault()
         window.localStorage.removeItem('loggedBlogAppUser')
         setUserState(null)
+       setMessage({ ...message, success:`See you soon ${username}`})
+        setTimeout(() => {
+            setMessage({ ...message, success:null})
+        }, 4000)
     }
 
 
@@ -42,8 +50,8 @@ export const LoginForm = ({ userState, setUserState, errorMsg, setErrorMsg, setT
                     <section className='flex items-center gap-2 '>
                         <p>Logged in as {userState.username}</p>
                         <button
-                        className='hover:text-red-500 transition-all'
-                        onClick={handleLogout}
+                            className='hover:text-red-500 transition-all'
+                            onClick={handleLogout}
                         >
                             Exit
                         </button>
@@ -72,7 +80,6 @@ export const LoginForm = ({ userState, setUserState, errorMsg, setErrorMsg, setT
                         <button type='submit'>Enter</button>
                     </form>
             }
-            { errorMsg ? errorMsg : null }
         </section>
     )
 }

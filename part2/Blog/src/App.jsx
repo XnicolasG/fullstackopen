@@ -3,11 +3,15 @@ import blogService from './services/blog';
 import { Blog } from './components/Blog';
 import { LoginForm } from './components/LoginForm';
 import { CreateForm } from './components/CreateForm';
+import { Message } from './components/Message';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
   const [userState, setUserState] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [message, setMessage] = useState({
+    error:null,
+    success:null,
+  });
 
   const { getAll,setToken,createBlog} = blogService;
 
@@ -38,21 +42,37 @@ function App() {
       }
   }, []);
 
-  const handleAdd = (e, values, setValues) => {
-    e.preventDefault()
-    const blogObject = {...values, 
-        id:(blogs.length + 1).toString(),
-        likes: Math.floor(Math.random() * 60)}
-    createBlog(blogObject)
-    .then(resp => {
-        setBlogs(blogs.concat(resp))
+  const handleAdd = async (e, values, setValues) => {
+    e.preventDefault();
+    try {
+        const blogObject = {
+            ...values,
+            id: (blogs.length + 1).toString(),
+            likes: Math.floor(Math.random() * 60),
+        };
+
+        const newBlog = await createBlog(blogObject); 
+        setBlogs([...blogs, newBlog]);
         setValues({
             title: '',
             author: '',
-            url: ''
-        })
-    })
-}
+            url: '',
+        });
+        setMessage({ ...message, success: `A new blog ${blogObject.title} by ${blogObject.author} added!` });
+
+        setTimeout(() => {
+            setMessage({ ...message, success: null });
+        }, 4000);
+    } catch (error) {
+        console.error('Error al crear el blog:', error);
+
+        setMessage({ ...message, error: 'Failed to add the blog. Please try again.' });
+
+        setTimeout(() => {
+            setMessage({ ...message, error: null });
+        }, 4000);
+    }
+};
   return (
     <section className="w-lvw">
       <nav className="flex flex-wrap justify-around items-center p-2">
@@ -61,9 +81,10 @@ function App() {
           userState={userState}
           setUserState={setUserState}
           setToken={setToken}
-          errorMsg={errorMsg}
-          setErrorMsg={setErrorMsg} />
+          message={message}
+          setMessage={setMessage} />
       </nav>
+      <Message message={message} />
       <main>
         {
           userState ?
