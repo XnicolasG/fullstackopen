@@ -15,6 +15,7 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   const { getAll, create, update } = noteService
 
@@ -26,7 +27,6 @@ function App() {
     })
       .catch(error => {
         console.log(error);
-
       })
   }, [])
 
@@ -119,37 +119,47 @@ function App() {
         setNotes(notes.filter(n => n.id !== id))
       })
   }
-
+const handleLoginVisible = () => {
+  setLoginVisible(!loginVisible)
+}
 
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMsg} />
-      {user === null
-        ? <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
-        :
-        <div>
-          <section className='userInfo'>
-            <p>{user.name} logged-in</p>
-            <button
-              onClick={handleLogout}
-              className='userInfo_logout'>
-              logout
-            </button>
-          </section>
-          <NoteForm
-            handleAdd={handleAdd}
-            newNote={newNote}
-            handleNoteChange={handleNoteChange}
-          />
-        </div>
-      }
+      {
+    loginVisible ? (
+        user === null ? (
+            <LoginForm
+                handleLogin={handleLogin}
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+                handleLoginVisible={handleLoginVisible} // Pasar la lógica para "Cancelar"
+            />
+        ) : (
+            <div>
+                <section className="userInfo">
+                    <p>{user?.name} logged-in</p>
+                    <button
+                        onClick={handleLogout}
+                        className="userInfo_logout"
+                    >
+                        logout
+                    </button>
+                </section>
+                <NoteForm
+                    handleAdd={handleAdd}
+                    newNote={newNote}
+                    handleNoteChange={handleNoteChange}
+                />
+            </div>
+        )
+    ) : (
+        <button onClick={handleLoginVisible}>Log in</button>
+    )
+}
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>

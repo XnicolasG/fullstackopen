@@ -53,6 +53,11 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+form{
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+}
 .error {
   color: tomato;
   font-size: 20px;
