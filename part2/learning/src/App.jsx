@@ -6,6 +6,7 @@ import { Footer } from './components/Footer'
 import loginService from './services/login'
 import { LoginForm } from './components/LoginForm'
 import { NoteForm } from './components/NoteForm'
+import { Togglable } from './components/Togglable'
 
 function App() {
   const [notes, setNotes] = useState([])
@@ -15,7 +16,6 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
 
   const { getAll, create, update } = noteService
 
@@ -119,47 +119,34 @@ function App() {
         setNotes(notes.filter(n => n.id !== id))
       })
   }
-const handleLoginVisible = () => {
-  setLoginVisible(!loginVisible)
-}
 
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMsg} />
-      {
-    loginVisible ? (
-        user === null ? (
-            <LoginForm
-                handleLogin={handleLogin}
-                username={username}
-                setUsername={setUsername}
-                password={password}
-                setPassword={setPassword}
-                handleLoginVisible={handleLoginVisible} // Pasar la lógica para "Cancelar"
-            />
-        ) : (
-            <div>
-                <section className="userInfo">
-                    <p>{user?.name} logged-in</p>
-                    <button
-                        onClick={handleLogout}
-                        className="userInfo_logout"
-                    >
-                        logout
-                    </button>
-                </section>
-                <NoteForm
-                    handleAdd={handleAdd}
-                    newNote={newNote}
-                    handleNoteChange={handleNoteChange}
-                />
-            </div>
-        )
-    ) : (
-        <button onClick={handleLoginVisible}>Log in</button>
-    )
-}
+      {user === null ? (
+    <Togglable buttonLabel="Log in">
+        <LoginForm
+            handleLogin={handleLogin}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+        />
+    </Togglable>
+) : (
+    <div>
+        <section className='userInfo'>
+            <p>{user?.name} logged-in</p>
+            <button onClick={handleLogout} className='userInfo_logout'>Logout</button>
+        </section>
+        <NoteForm
+            handleAdd={handleAdd}
+            newNote={newNote}
+            handleNoteChange={handleNoteChange}
+        />
+    </div>
+)}
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>
