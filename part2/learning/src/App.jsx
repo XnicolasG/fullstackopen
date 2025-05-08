@@ -10,7 +10,6 @@ import { Togglable } from './components/Togglable'
 
 function App() {
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMsg, setErrorMsg] = useState(null)
   const [username, setUsername] = useState('')
@@ -73,26 +72,16 @@ function App() {
     : notes.filter(note => note.important)
 
 
-  const handleAdd = (e) => {
-    e.preventDefault()
-    const noteObject = {
-      content: newNote,
-      important: Math.random() < 0.5,
-      id: (notes.length + 1).toString()
+  const handleAdd = async noteObject => {
+    try {
+      const response = await create(noteObject)
+      setNotes(notes.concat(response))
+    } catch (error) {
+      throw new Error("Error at handleAdd function" + error);
     }
-    create(noteObject)
-      .then(resp => {
-        setNotes(notes.concat(resp))
-        setNewNote('')
-      })
 
   }
 
-  const handleNoteChange = (e) => {
-    setNewNote(e.target.value)
-    console.log(e.target.value);
-
-  }
   const handleLogout = e => {
     e.preventDefault()
     window.localStorage.removeItem('loggedNoteAppUser')
@@ -124,35 +113,34 @@ function App() {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMsg} />
-      {user === null ? (
-    <Togglable buttonLabel="Log in">
-        <LoginForm
-            handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-        />
-    </Togglable>
-) : (
-    <div>
-        <section className='userInfo'>
-            <p>{user?.name} logged-in</p>
-            <button onClick={handleLogout} className='userInfo_logout'>Logout</button>
-        </section>
-        <NoteForm
-            handleAdd={handleAdd}
-            newNote={newNote}
-            handleNoteChange={handleNoteChange}
-        />
-    </div>
-)}
+      {
+        user === null ? (
+          <Togglable buttonLabel="Log in">
+            <LoginForm
+              handleLogin={handleLogin}
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+            />
+          </Togglable>
+        ) : (
+          <div>
+            <section className='userInfo'>
+              <p>{user?.name} logged-in</p>
+              <button onClick={handleLogout} className='userInfo_logout'>Logout</button>
+            </section>
 
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
-        </button>
-      </div>
+            <NoteForm
+              handleAdd={handleAdd}
+            />
+          </div>
+        )
+      }
+
+      <button onClick={() => setShowAll(!showAll)}>
+        Show {showAll ? 'important' : 'all'}
+      </button>
       <ul>
         {handleNotesToShow.map(note =>
           <Note
@@ -161,7 +149,6 @@ function App() {
             note={note} />
         )}
       </ul>
-
       <Footer />
     </div>
   )
