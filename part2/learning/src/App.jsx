@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Note } from './components/Note'
 import noteService from './services/note'
 import { Notification } from './components/Notificaction'
@@ -15,6 +15,8 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const noteFormRef = useRef()
 
   const { getAll, create, update } = noteService
 
@@ -74,6 +76,7 @@ function App() {
 
   const handleAdd = async noteObject => {
     try {
+      noteFormRef.current.toggleVisibility()
       const response = await create(noteObject)
       setNotes(notes.concat(response))
     } catch (error) {
@@ -130,10 +133,11 @@ function App() {
               <p>{user?.name} logged-in</p>
               <button onClick={handleLogout} className='userInfo_logout'>Logout</button>
             </section>
-
-            <NoteForm
-              handleAdd={handleAdd}
-            />
+            <Togglable buttonLabel='New note' ref={noteFormRef} >
+              <NoteForm
+                createNote={handleAdd}
+              />
+            </Togglable>
           </div>
         )
       }
