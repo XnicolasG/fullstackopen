@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Blog = ({ blogItem,handleLikes }) => {
+export const Blog = ({ blogItem,handleLikes,handleDelete }) => {
 
     
     return (
@@ -16,6 +16,7 @@ export const Blog = ({ blogItem,handleLikes }) => {
                 >♥️</button>
                  </p>
             <p>Author: {blogItem.author ? blogItem.author : 'Annonimus' }</p>
+            <button onClick={handleDelete} >Delete</button>
         </li>
     )
 }

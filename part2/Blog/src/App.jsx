@@ -8,6 +8,7 @@ import { Togglable } from './components/Togglable';
 import { useRef } from 'react';
 import { TogglableBlog } from './components/TogglableBlog';
 
+
 function App() {
   const [blogs, setBlogs] = useState([]);
   const [userState, setUserState] = useState(null);
@@ -15,11 +16,12 @@ function App() {
     error: null,
     success: null,
   });
-  
-  
-  const { getAll, setToken, createBlog, updateBlog } = blogService;
+
+
+  const { getAll, setToken, createBlog, updateBlog, deleteBlog } = blogService;
 
   const createFormRef = useRef()
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +44,7 @@ function App() {
       const user = JSON.parse(loggedUserJSON);
       setUserState(user);
       setToken(user.token);
+      console.warn(user);
       console.log('User logged-in succesfully');
     } else {
       console.log('User is not logged, please login');
@@ -82,15 +85,27 @@ function App() {
 
   const handleIncreaseLikes = async (id) => {
     try {
-        const blog = blogs.find(blog => blog.id === id);
-        const changeBlog = { ...blog, likes: blog.likes + 1 }; 
-        
-        const response = await updateBlog(id, changeBlog);
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : response));
+      const blog = blogs.find(blog => blog.id === id);
+      const changeBlog = { ...blog, likes: blog.likes + 1 };
+
+      const response = await updateBlog(id, changeBlog);
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : response));
     } catch (error) {
-        console.error("Error at handleIncreaseLikes:", error);
+      console.error("Error at handleIncreaseLikes:", error);
     }
-};
+  };
+
+  const handleDelete = async (id, author) => {
+    const token = `Bearer ${userState.token}`
+    const confirmDelete = window.confirm(`Are you sure you want to delete this blog by ${author}`);
+    if (!confirmDelete) return;
+    try {
+      await deleteBlog(id,token)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+    } catch (error) {
+      console.error("Error at handleDelete:", error);
+    }
+  }
 
   return (
     <section className="w-lvw">
@@ -116,18 +131,19 @@ function App() {
               <ul className='p-2'>
                 {
                   blogs
-                  .sort((a,b) => a.likes - b.likes)
-                  .map((item) =>
-                    <TogglableBlog
-                      key={item.id}
-                      title={item?.title}
+                    .sort((a, b) => a.likes - b.likes)
+                    .map((item) =>
+                      <TogglableBlog
+                        key={item.id}
+                        title={item?.title}
                       >
-                      <Blog
-                        handleLikes={() => handleIncreaseLikes(item?.id)}
-                        blogItem={item}
-                      />
-                    </TogglableBlog>
-                  )
+                        <Blog
+                          handleLikes={() => handleIncreaseLikes(item?.id)}
+                          handleDelete={() => item?.id && handleDelete(item.id, item.author)}
+                          blogItem={item}
+                        />
+                      </TogglableBlog>
+                    )
                 }
               </ul>
             </section>

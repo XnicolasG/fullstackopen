@@ -30,9 +30,24 @@ const updateBlog = async (id, newObj) =>{
     return request.data
 }
 
+const deleteBlog = async (id) => {
+    console.warn(token);
+    
+    const config = {
+        headers: { Authorization: token },
+    }
+    console.log('config: ', config.headers.Authorization);
+    
+    const response = await axios.delete(`${url}/${id}`, config);
+    if (response.status === 204) return true; 
+    
+    throw new Error("Failed to delete blog");
+};
+
 export default {
     getAll,
     setToken,
     createBlog,
-    updateBlog
+    updateBlog,
+    deleteBlog
 };
