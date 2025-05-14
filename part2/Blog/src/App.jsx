@@ -15,7 +15,8 @@ function App() {
     error: null,
     success: null,
   });
-
+  
+  
   const { getAll, setToken, createBlog, updateBlog } = blogService;
 
   const createFormRef = useRef()
@@ -114,7 +115,9 @@ function App() {
               </Togglable>
               <ul className='p-2'>
                 {
-                  blogs.map((item) =>
+                  blogs
+                  .sort((a,b) => a.likes - b.likes)
+                  .map((item) =>
                     <TogglableBlog
                       key={item.id}
                       title={item?.title}
