@@ -16,7 +16,7 @@ function App() {
     success: null,
   });
 
-  const { getAll, setToken, createBlog } = blogService;
+  const { getAll, setToken, createBlog, updateBlog } = blogService;
 
   const createFormRef = useRef()
 
@@ -78,6 +78,19 @@ function App() {
       }, 4000);
     }
   };
+
+  const handleIncreaseLikes = async (id) => {
+    try {
+        const blog = blogs.find(blog => blog.id === id);
+        const changeBlog = { ...blog, likes: blog.likes + 1 }; 
+        
+        const response = await updateBlog(id, changeBlog);
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : response));
+    } catch (error) {
+        console.error("Error at handleIncreaseLikes:", error);
+    }
+};
+
   return (
     <section className="w-lvw">
       <nav className="flex flex-wrap justify-around items-center p-2">
@@ -103,9 +116,11 @@ function App() {
                 {
                   blogs.map((item) =>
                     <TogglableBlog
-                      title={item.title}
-                      key={item.id}>
+                      key={item.id}
+                      title={item?.title}
+                      >
                       <Blog
+                        handleLikes={() => handleIncreaseLikes(item?.id)}
                         blogItem={item}
                       />
                     </TogglableBlog>
