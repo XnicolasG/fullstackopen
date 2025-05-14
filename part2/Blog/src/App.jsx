@@ -5,6 +5,8 @@ import { LoginForm } from './components/LoginForm';
 import { CreateForm } from './components/CreateForm';
 import { Message } from './components/Message';
 import { Togglable } from './components/Togglable';
+import { useRef } from 'react';
+import { TogglableBlog } from './components/TogglableBlog';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -15,6 +17,8 @@ function App() {
   });
 
   const { getAll, setToken, createBlog } = blogService;
+
+  const createFormRef = useRef()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,7 +55,7 @@ function App() {
         id: (blogs.length + 1).toString(),
         likes: Math.floor(Math.random() * 60),
       };
-
+      createFormRef.current.toggleVisibility()
       const newBlog = await createBlog(blogObject);
       setBlogs([...blogs, newBlog]);
       setValues({
@@ -90,7 +94,7 @@ function App() {
         {
           userState ?
             <section>
-              <Togglable buttonLabel='New blog'>
+              <Togglable buttonLabel='New blog' buttonVisibility='cancel' ref={createFormRef}>
                 <CreateForm
                   handleAdd={handleAdd}
                 />
@@ -98,10 +102,13 @@ function App() {
               <ul className='p-2'>
                 {
                   blogs.map((item) =>
-                    <Blog
-                      // key={item.id}
-                      blogItem={item}
-                    />
+                    <TogglableBlog
+                      title={item.title}
+                      key={item.id}>
+                      <Blog
+                        blogItem={item}
+                      />
+                    </TogglableBlog>
                   )
                 }
               </ul>

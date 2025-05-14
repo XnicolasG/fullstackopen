@@ -3,10 +3,11 @@ import React from 'react'
 export const Blog = ({ blogItem }) => {
     return (
         <li
-            className='flex gap-2 hover:text-sky-500 cursor-pointer'
+            className='flex flex-col gap-2 hover:text-sky-500 cursor-pointer'
             key={blogItem.id}>
-            <p>{blogItem?.title} </p>
-            <span> ♥️{blogItem.likes} </span>
+            <p>Url: {blogItem?.url} </p>
+            <p> Likes: {blogItem.likes}♥️ </p>
+            <p>Author: {blogItem.author ? blogItem.author : 'Annonimus' }</p>
         </li>
     )
 }
