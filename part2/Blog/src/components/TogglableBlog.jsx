@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 export const TogglableBlog = (props) => {
@@ -22,4 +23,8 @@ export const TogglableBlog = (props) => {
             }
         </section>
     )
+}
+TogglableBlog.propTypes = {
+    title: PropTypes.string.isRequired
+    
 }

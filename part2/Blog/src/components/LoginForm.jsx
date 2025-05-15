@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import loginServices from '../services/login';
+import PropTypes from 'prop-types';
 
 export const LoginForm = ({ userState, setUserState, message, setMessage, setToken }) => {
     const [username, setUsername] = useState('');
@@ -82,4 +83,12 @@ export const LoginForm = ({ userState, setUserState, message, setMessage, setTok
             }
         </section>
     )
+}
+
+LoginForm.propTypes = {
+    userState: PropTypes.func.isRequired, 
+    setUserState: PropTypes.func.isRequired, 
+    message: PropTypes.func.isRequired, 
+    setMessage: PropTypes.func.isRequired, 
+    setToken : PropTypes.func.isRequired
 }
