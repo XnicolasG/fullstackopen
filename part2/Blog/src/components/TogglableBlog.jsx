@@ -11,7 +11,7 @@ export const TogglableBlog = (props) => {
     return (
         <section className={`${!visible && 'outline-2 outline-sky-300'} outline-1 my-2`}>
                 <section className='flex items-center gap-4'>
-                    <p>{props.title}</p>
+                    <p className={`${!visible && 'hidden'}`}>{props.title}</p>
                     <button onClick={toggleVisibility} >{buttonLabel}</button>
                 </section>
                 
