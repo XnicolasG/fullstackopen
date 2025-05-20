@@ -32,6 +32,7 @@ export const CreateForm = ({ handleAdd }) => {
                         <p className='w-14'>{field}</p>
                         <input
                             className="login__input"
+                            data-testid={field}
                             value={values[field]}
                             onChange={(e) => handleChange(e,field)}
                             required
@@ -39,7 +40,7 @@ export const CreateForm = ({ handleAdd }) => {
                     </div>
                 )
             }
-            <button className=' w-26'>create</button>
+            <button data-testid='form_submitbutton' className=' w-26'>create</button>
         </form>
     )
 }
