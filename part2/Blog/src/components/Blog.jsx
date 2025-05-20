@@ -20,6 +20,7 @@ export const Blog = ({ blogItem, handleLikes, handleDelete }) => {
                     <p data-testid='blog_likes'>
                         Likes: {blogItem.likes}
                         <button
+                            data-testid='blog_likebutton'
                             className='mx-2'
                             onClick={handleLikes}
                         >♥️</button>
