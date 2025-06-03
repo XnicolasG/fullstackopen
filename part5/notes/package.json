@@ -3,8 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
-    "test:report": "playwright show-report"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "build:ui": "rm -rf build && cd ../frontend/ && npm run build && cp -r build ../backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs",
+    "lint": "eslint .",
+    "test": "cross-env NODE_ENV=test node --test",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +19,7 @@
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.52.0",
-    "@types/node": "^22.15.23"
+    "@types/node": "^22.15.23",
+    "cross-env": "^7.0.3"
   }
 }
