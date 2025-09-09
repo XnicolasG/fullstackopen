@@ -1,18 +1,18 @@
 const { test, describe, expect, beforeEach } = require('@playwright/test')
-const { loginWith } = require('./helper')
+const { loginWith, createNote } = require('./helper')
 
 
 describe('Note app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3001/api/testing')
-    await request.post('http://localhost:3001/api/users', {
+    await request.post('/api/testing')
+    await request.post('/api/users', {
       data: {
         username: 'percy1',
         password: 'P3rcy'
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('login fails with wrong password', async ({ page }) => {
@@ -48,17 +48,14 @@ describe('Note app', () => {
     beforeEach(async ({ page, request }) => {
       await request.post('http://localhost:3001/api/testing')
 
-      await page.getByRole('button', { name: /log in/i }).click()
-
-      await page.getByTestId('username').fill('percy1')
-      await page.getByTestId('password').fill('P3rcy')
-      await page.getByRole('button', { name: 'Login' }).click()
+      await loginWith(page, 'percy1', 'P3rcy')
 
       await expect(page.getByText('logged-in')).toBeVisible()
 
-      await page.getByRole('button', { name: 'New note' }).click()
-      await page.getByTestId('new note').fill('another note by playwright')
-      await page.getByRole('button', { name: 'save' }).click()
+      await createNote(page, 'another note by playwright')
+      // await page.getByRole('button', { name: 'New note' }).click()
+      // await page.getByTestId('new note').fill('another note by playwright')
+      // await page.getByRole('button', { name: 'save' }).click()
     })
 
     test('a new note can be created', async ({ page }) => {
