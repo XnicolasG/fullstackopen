@@ -1,4 +1,5 @@
 const { test, describe, expect, beforeEach } = require('@playwright/test')
+const { loginWith } = require('./helper')
 
 
 describe('Note app', () => {
@@ -15,10 +16,12 @@ describe('Note app', () => {
   })
 
   test('login fails with wrong password', async ({ page }) => {
-    await page.getByRole('button', { name: 'log in' }).click()
-    await page.getByTestId('username').fill('percy1')
-    await page.getByTestId('password').fill('wrong')
-    await page.getByRole('button', { name: 'login' }).click()
+    // await page.getByRole('button', { name: 'log in' }).click()
+    // await page.getByTestId('username').fill('percy1')
+    // await page.getByTestId('password').fill('wrong')
+    // await page.getByRole('button', { name: 'login' }).click()
+    await loginWith(page, 'percy1', 'wrong')
+
 
     await expect(page.getByText('Wrong credentials, please try again')).toBeVisible()
   })
@@ -30,18 +33,20 @@ describe('Note app', () => {
   })
 
   test('Login form can be opened', async ({ page }) => {
-    await page.getByRole('button', { name: /log in/i }).click()
+    // await page.getByRole('button', { name: /log in/i }).click()
 
-    await page.getByTestId('username').fill('percy1')
-    await page.getByTestId('password').fill('P3rcy')
-    await page.getByRole('button', { name: 'Login' }).click()
+    // await page.getByTestId('username').fill('percy1')
+    // await page.getByTestId('password').fill('P3rcy')
+    // await page.getByRole('button', { name: 'Login' }).click()
+
+    await loginWith(page, 'percy1', 'P3rcy')
 
     await expect(page.getByText('logged-in')).toBeVisible()
   })
 
   describe('when logged a note exist', () => {
     beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3001/api/testing')
+      await request.post('http://localhost:3001/api/testing')
 
       await page.getByRole('button', { name: /log in/i }).click()
 
